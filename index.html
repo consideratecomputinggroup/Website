@@ -2543,7 +2543,7 @@ var a=(this||self)._jsa||{};a._cfc=void 0;a._aeh=void 0;}).call(this);
 
 .title {
   font-family: &quot;Montserrat&quot;, Ariel;
-  font-size: 48px;
+  font-size: 7vw;
   font-weight: 400;
   vertical-align: baseline;
   text-align: center;
@@ -2622,7 +2622,12 @@ succeed in the age of AI.</span></p></div></div></div></div></div></div></div></
     //const backendUrl = &#39;http://localhost:3000/contact&#39;;
     const backendUrl = &quot;https://backend-n1qn.onrender.com/contact&quot;
 
+    let disabled = false;
+
     async function onSubmit(token) {
+      if (disabled)
+        return
+
       const email = document.getElementById(&quot;email-input&quot;).value;
       const message = document.getElementById(&quot;message-input&quot;).value;
 
@@ -2633,6 +2638,7 @@ succeed in the age of AI.</span></p></div></div></div></div></div></div></div></
         return;
       }
 
+      disabled = true
       const response = await fetch(backendUrl, {
         method: &#39;POST&#39;,
         headers: {
@@ -2640,9 +2646,13 @@ succeed in the age of AI.</span></p></div></div></div></div></div></div></div></
         },
         body: JSON.stringify({ email, message, recaptchaToken: token }),
       });
+      disabled = false
 
       if (!response.ok) {
-        alert(&#39;Error submitting form&#39;);
+        alert(&#39;We apologize, our backend has encountered an error. We are working to resolve the issue. Until then, please write to us at partner@consideratecomputinggroup.com&#39;);
+      } else {
+        document.getElementById(&quot;email-input&quot;).value = &quot;&quot;
+        document.getElementById(&quot;message-input&quot;).value = &quot;&quot;
       }
     }
   &lt;/script&gt;
