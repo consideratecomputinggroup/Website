@@ -2616,9 +2616,41 @@ succeed in the age of AI.</span></p></div></div></div></div></div></div></div></
   &lt;meta charset=&quot;UTF-8&quot;&gt;
   &lt;title&gt;Title&lt;/title&gt;
 
+   &lt;script src=&quot;https://www.google.com/recaptcha/api.js&quot;&gt;&lt;/script&gt;
+
+   &lt;script&gt;
+    //const backendUrl = &#39;http://localhost:3000/contact&#39;;
+    const backendUrl = &quot;https://backend-n1qn.onrender.com/contact&quot;
+
+    async function onSubmit(token) {
+      const email = document.getElementById(&quot;email-input&quot;).value;
+      const message = document.getElementById(&quot;message-input&quot;).value;
+
+      const emailRegex = /(?:[a-z0-9!#$%&amp;&#39;*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&amp;&#39;*+/=?^_`{|}~-]+)*|&quot;(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*&quot;)@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/gi;
+
+      if (!emailRegex.test(email)) {
+        alert(&#39;Please specify a valid email address.&#39;);
+        return;
+      }
+
+      const response = await fetch(backendUrl, {
+        method: &#39;POST&#39;,
+        headers: {
+          &#39;Content-Type&#39;: &#39;application/json&#39;,
+        },
+        body: JSON.stringify({ email, message, recaptchaToken: token }),
+      });
+
+      if (!response.ok) {
+        alert(&#39;Error submitting form&#39;);
+      }
+    }
+  &lt;/script&gt;
+
   &lt;link href=&quot;https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css&quot; rel=&quot;stylesheet&quot;&gt;
   &lt;script src=&quot;https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js&quot;&gt;&lt;/script&gt;
   &lt;link rel=&quot;stylesheet&quot; href=&quot;https://fonts.googleapis.com/icon?family=Material+Icons&quot;&gt;
+
   &lt;style&gt;
     :root {
       --mdc-theme-primary: rgba(34,110,147,1);
@@ -2647,11 +2679,24 @@ succeed in the age of AI.</span></p></div></div></div></div></div></div></div></
       width: 100%;
       max-width: 30em;
     }
+
+    .grecaptcha-badge {
+      visibility: hidden;
+    }
+
+    .recaptcha-warning {
+      width: 100%;
+      color: grey;
+    }
+
+    .recaptcha-warning a {
+      color: black;
+    }
   &lt;/style&gt;
   &lt;script&gt;
-    document.addEventListener('DOMContentLoaded', function() {
-      mdc.ripple.MDCRipple.attachTo(document.querySelector('.mdc-text-field'));
-      mdc.textField.MDCTextField.attachTo(document.querySelector('.mdc-text-field'));
+    document.addEventListener(&#39;DOMContentLoaded&#39;, function() {
+      mdc.ripple.MDCRipple.attachTo(document.querySelector(&#39;.mdc-text-field&#39;));
+      mdc.textField.MDCTextField.attachTo(document.querySelector(&#39;.mdc-text-field&#39;));
     })
   &lt;/script&gt;
 &lt;/head&gt;
@@ -2666,7 +2711,7 @@ succeed in the age of AI.</span></p></div></div></div></div></div></div></div></
       &lt;span class=&quot;mdc-notched-outline__trailing&quot;&gt;&lt;/span&gt;
     &lt;/span&gt;
     &lt;i class=&quot;material-icons mdc-text-field__icon mdc-text-field__icon--leading&quot; tabindex=&quot;0&quot; role=&quot;button&quot;&gt;email&lt;/i&gt;
-    &lt;input class=&quot;mdc-text-field__input&quot; type=&quot;text&quot; aria-labelledby=&quot;my-label-id&quot;&gt;
+    &lt;input id=&quot;email-input&quot; class=&quot;mdc-text-field__input&quot; type=&quot;email&quot; aria-labelledby=&quot;my-label-id&quot;&gt;
   &lt;/label&gt;
 
   &lt;br/&gt;
@@ -2677,18 +2722,31 @@ succeed in the age of AI.</span></p></div></div></div></div></div></div></div></
       &lt;span class=&quot;mdc-notched-outline__trailing more-border&quot;&gt;&lt;/span&gt;
     &lt;/span&gt;
     &lt;span class=&quot;mdc-text-field__resizer&quot;&gt;
-      &lt;textarea class=&quot;mdc-text-field__input&quot; rows=&quot;8&quot; cols=&quot;40&quot; aria-label=&quot;Label&quot; placeholder=&quot;How can we help you? (optional)&quot;&gt;&lt;/textarea&gt;
+      &lt;textarea id=&quot;message-input&quot; class=&quot;mdc-text-field__input&quot; rows=&quot;8&quot; cols=&quot;40&quot; aria-label=&quot;Label&quot; placeholder=&quot;How can we help you? (optional)&quot;&gt;&lt;/textarea&gt;
     &lt;/span&gt;
   &lt;/label&gt;
 
   &lt;br/&gt;
 
-  &lt;button class=&quot;mdc-button mdc-button--outlined&quot;&gt;
-  &lt;span class=&quot;mdc-button__ripple&quot;&gt;&lt;/span&gt;
-  &lt;span class=&quot;mdc-button__label&quot;&gt;Submit&lt;/span&gt;
-&lt;/button&gt;
+  &lt;button class=&quot;mdc-button mdc-button--outlined g-recaptcha&quot;
+          id=&quot;submit&quot;
+          data-sitekey=&quot;6LdLUPslAAAAAI2fBe6h_qy01kwXx1JQ76nLQn65&quot;
+          data-callback=&#39;onSubmit&#39;
+          data-action=&#39;submit&#39;
+  &gt;
+    &lt;span class=&quot;mdc-button__ripple&quot;&gt;&lt;/span&gt;
+    &lt;span class=&quot;mdc-button__label&quot;&gt;Submit&lt;/span&gt;
+  &lt;/button&gt;
+
+  &lt;br/&gt;
+
+  &lt;div class=&quot;recaptcha-warning mdc-typography--caption&quot;&gt;
+    This site is protected by reCAPTCHA and the Google
+    &lt;a href=&quot;https://policies.google.com/privacy&quot;&gt;Privacy Policy&lt;/a&gt; and
+    &lt;a href=&quot;https://policies.google.com/terms&quot;&gt;Terms of Service&lt;/a&gt; apply.
+  &lt;/div&gt;
 &lt;/div&gt;
-&lt;/body&gt;" jsaction="rcuQ6b:rcuQ6b;"><iframe class="pxjVId" style="height: 22em;"></iframe></div></div></div></div></div></div></div></div></div></div></div><div class="hJDwNd-AhqUyc-qWD73c Ft7HRd-AhqUyc-qWD73c purZT-AhqUyc-II5mzb ZcASvf-AhqUyc-II5mzb pSzOP-AhqUyc-qWD73c Ktthjf-AhqUyc-qWD73c JNdkSc SQVYQc yYI8W HQwdzb"><div class="JNdkSc-SmKAyb LkDMRd"><div class="" jscontroller="sGwD4d" jsaction="zXBUYb:zTPCnb;zQF9Uc:Qxe3nd;" jsname="F57UId"><div class="oKdM2c ZZyype Kzv0Me"><div id="h.599cbdf8b67da82_51" class="hJDwNd-AhqUyc-qWD73c Ft7HRd-AhqUyc-qWD73c jXK9ad D2fZ2 zu5uec OjCsFc dmUFtb"><div class="jXK9ad-SmKAyb"><div class="tyJCtd mGzaTb Depvyb baZpAe"><div id="h.e5wiujeadonc" class="GV3q8e yMxPgf  aP9Z7e"></div><h3 id="h.e5wiujeadonc_l" dir="ltr" class="zfr3Q OmQG5e CDt4Ke " style=""><span class="C9DxTc " style="">You can also reach us at</span></h3></div></div></div></div><div class="oKdM2c ZZyype"><div id="h.599cbdf8b67da82_58" class="hJDwNd-AhqUyc-qWD73c Ft7HRd-AhqUyc-qWD73c jXK9ad D2fZ2 zu5uec wHaque g5GTcb"><div class="jXK9ad-SmKAyb"><div class="tyJCtd mGzaTb Depvyb baZpAe"><p dir="ltr" class="zfr3Q CDt4Ke " style=""><a class="XqQF9c" href="mailto:partner@consideratecomputinggroup.com" target="_blank" style="color: inherit; text-decoration: none;"><span class="C9DxTc aw5Odc " style="font-size: 13.999999999999998pt; vertical-align: baseline;">partner@consideratecomputinggroup.com</span></a></p></div></div></div></div></div></div></div></div></div></section></div><div class="Xpil1b xgQ6eb"></div><footer jsname="yePe5c"></footer></div></div></div><script nonce="idhELhQqf4Xf2S1gpCbn4Q">DOCS_timing['cov']=new Date().getTime();</script><script id="base-js" nonce="idhELhQqf4Xf2S1gpCbn4Q">var _F_jsUrl = '/_/atari/_/js/k=';
+&lt;/body&gt;" jsaction="rcuQ6b:rcuQ6b;"><iframe class="pxjVId" style="height: 28em;"></iframe></div></div></div></div></div></div></div></div></div></div></div><div class="hJDwNd-AhqUyc-qWD73c Ft7HRd-AhqUyc-qWD73c purZT-AhqUyc-II5mzb ZcASvf-AhqUyc-II5mzb pSzOP-AhqUyc-qWD73c Ktthjf-AhqUyc-qWD73c JNdkSc SQVYQc yYI8W HQwdzb"><div class="JNdkSc-SmKAyb LkDMRd"><div class="" jscontroller="sGwD4d" jsaction="zXBUYb:zTPCnb;zQF9Uc:Qxe3nd;" jsname="F57UId"><div class="oKdM2c ZZyype Kzv0Me"><div id="h.599cbdf8b67da82_51" class="hJDwNd-AhqUyc-qWD73c Ft7HRd-AhqUyc-qWD73c jXK9ad D2fZ2 zu5uec OjCsFc dmUFtb"><div class="jXK9ad-SmKAyb"><div class="tyJCtd mGzaTb Depvyb baZpAe"><div id="h.e5wiujeadonc" class="GV3q8e yMxPgf  aP9Z7e"></div><h3 id="h.e5wiujeadonc_l" dir="ltr" class="zfr3Q OmQG5e CDt4Ke " style=""><span class="C9DxTc " style="">You can also reach us at</span></h3></div></div></div></div><div class="oKdM2c ZZyype"><div id="h.599cbdf8b67da82_58" class="hJDwNd-AhqUyc-qWD73c Ft7HRd-AhqUyc-qWD73c jXK9ad D2fZ2 zu5uec wHaque g5GTcb"><div class="jXK9ad-SmKAyb"><div class="tyJCtd mGzaTb Depvyb baZpAe"><p dir="ltr" class="zfr3Q CDt4Ke " style=""><a class="XqQF9c" href="mailto:partner@consideratecomputinggroup.com" target="_blank" style="color: inherit; text-decoration: none;"><span class="C9DxTc aw5Odc " style="font-size: 13.999999999999998pt; vertical-align: baseline;">partner@consideratecomputinggroup.com</span></a></p></div></div></div></div></div></div></div></div></div></section></div><div class="Xpil1b xgQ6eb"></div><footer jsname="yePe5c"></footer></div></div></div><script nonce="idhELhQqf4Xf2S1gpCbn4Q">DOCS_timing['cov']=new Date().getTime();</script><script id="base-js" nonce="idhELhQqf4Xf2S1gpCbn4Q">var _F_jsUrl = '/_/atari/_/js/k=';
 "use strict";this.default_tk=this.default_tk||{};(function(_){var window=this;
 try{
 /*
